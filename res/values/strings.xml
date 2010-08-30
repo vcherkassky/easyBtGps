@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, Main!</string>
     <string name="app_name">Easy Bluetooth GPS</string>
+    <string name="select_paired_device">Select paired device</string>
+    <string name="bt_not_supported_leaving">Bluetooth is not supported in your device. Exiting application.</string>
+    <string name="bt_not_enabled_leaving">Bluetooth is not enabled. Exiting application.</string>
 </resources>
