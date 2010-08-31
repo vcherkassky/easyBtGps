@@ -4,4 +4,9 @@
     <string name="select_paired_device">Select paired device</string>
     <string name="bt_not_supported_leaving">Bluetooth is not supported in your device. Exiting application.</string>
     <string name="bt_not_enabled_leaving">Bluetooth is not enabled. Exiting application.</string>
+    <string name="local_service_started">Location provider service started</string>
+    <string name="local_service_stopped">Location provider service stopped</string>
+    <string name="local_service_label">Location provider service</string>
+    <string name="local_service_connected">Location provider service connected</string>
+    <string name="local_service_disconnected">Location provider service disconnected</string>
 </resources>

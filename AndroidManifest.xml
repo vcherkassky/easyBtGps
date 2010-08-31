@@ -5,7 +5,9 @@
       android:versionName="1.0">
       
     <uses-permission android:name="android.permission.BLUETOOTH" />  
-      
+	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />      
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />	 
+	
     <application android:icon="@drawable/icon" android:label="@string/app_name"
     	android:debuggable="true">
         <activity android:name=".SelectDeviceActivity"
@@ -16,6 +18,8 @@
             </intent-filter>
         </activity>
 
+		<activity android:name=".MockLocationProviderTestActivity"/>
+		<service android:name=".LocationProviderService" />
     </application>
 
 
