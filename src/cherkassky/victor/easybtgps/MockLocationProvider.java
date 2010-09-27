@@ -1,11 +1,18 @@
 package cherkassky.victor.easybtgps;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.util.Log;
+import cherkassky.victor.easybtgps.nmea.LocationDataExtractor;
 
 
 /**
@@ -14,25 +21,29 @@ import android.util.Log;
  * Created Aug 30, 2010
  *
  */
-public class MockLocationProvider extends Thread {
+public class MockLocationProvider extends CustomLocationProviderThread {
 
     private List<String> data;
 
     private LocationManager locationManager;
 
-    private String mockLocationProvider;
-
     private String LOG_TAG = "MockLocationProvider";
 
-    public MockLocationProvider(LocationManager locationManager,
-            String mocLocationProvider, List<String> data) throws IOException {
+    public MockLocationProvider(LocationManager locationManager, String providerName, Context context) throws IOException {
 
-        this.locationManager = locationManager;
-        this.mockLocationProvider = mocLocationProvider;
-        this.data = data;
-    }
+		super(locationManager, providerName, context);
+		
+		List<String> data = new ArrayList<String>();
+		InputStream is = mContext.getAssets().open("locationData.csv");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		String line = null;
+		while ((line = reader.readLine()) != null) {
 
-    @Override
+			data.add(line);
+		}
+	}
+
+	@Override
     public void run() {
 
     	int i=0;
@@ -58,10 +69,17 @@ public class MockLocationProvider extends Thread {
             Double latitude = Double.valueOf(parts[0]);
             Double longitude = Double.valueOf(parts[1]);
             Double altitude = Double.valueOf(parts[2]);
-            Location location = new Location(mockLocationProvider);
+            Float speed = Float.valueOf(parts[3]);
+            Location location = new Location(mProviderName);
             location.setLatitude(latitude);
             location.setLongitude(longitude);
             location.setAltitude(altitude);
+            location.setSpeed(LocationDataExtractor.convertSpeedToMps(speed));
+            
+            Bundle locationExtras = new Bundle();
+            locationExtras.putInt("satellites", (int) Math.round(15*Math.random()));
+            
+            location.setExtras(locationExtras);
 
             Log.e(LOG_TAG, location.toString());
 
@@ -70,8 +88,7 @@ public class MockLocationProvider extends Thread {
             // ignored
             location.setTime(System.currentTimeMillis());
 
-            locationManager.setTestProviderLocation(mockLocationProvider,
-                    location);
+            locationManager.setTestProviderLocation(mProviderName, location);
         }
     }
 }

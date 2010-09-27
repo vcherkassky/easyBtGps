@@ -13,26 +13,35 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 public class SelectDeviceActivity extends Activity {
+	
+	private static final String TAG = SelectDeviceActivity.class.getSimpleName();
 
     private static final int REQUEST_ENABLE_BT = 1;
-
+    
+    private static final String BT_GPS_SERVICE_NAME = "cherkassky.victor.easybtgps.BT_GPS_SERVICE";
+    
 	private BluetoothAdapter mBluetoothAdapter;
 	
 	private BluetoothDevice mSelectedDevice;
 	
-    private boolean mIsBound;
-    
-    private LocationProviderService mBoundService;
+	private ILocationProviderService mService;
+	
+	private CheckBox cbOverrideSystemData;
+	
+	private boolean mLoggingEnabled;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,8 +67,6 @@ public class SelectDeviceActivity extends Activity {
         List<BluetoothDeviceDecorator> adapters = this.queryPairedBtDevices();
         ArrayAdapter<BluetoothDeviceDecorator> adapter = new ArrayAdapter<BluetoothDeviceDecorator>(this,
                 android.R.layout.simple_spinner_item, adapters);
-//        ArrayAdapter<BluetoothDevice> adapter = new ArrayAdapter<BluetoothDevice>(this, 
-//        		android.R.layout.simple_spinner_item, new ArrayList<BluetoothDevice>(mBluetoothAdapter.getBondedDevices()));
         
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         
@@ -72,7 +79,6 @@ public class SelectDeviceActivity extends Activity {
 
 				BluetoothDeviceDecorator adapter = (BluetoothDeviceDecorator)paramAdapterView.getItemAtPosition(position);
 				mSelectedDevice = adapter.getDevice();
-//				testLocationService();
 			}
 
 			@Override
@@ -83,12 +89,17 @@ public class SelectDeviceActivity extends Activity {
         	
 		});
         
+        cbOverrideSystemData = (CheckBox)findViewById(R.id.override_system_data);
+        
         // Watch for button clicks.
-        Button button = (Button)findViewById(R.id.bind);
-        button.setOnClickListener(mBindListener);
-        button = (Button)findViewById(R.id.unbind);
-        button.setOnClickListener(mUnbindListener);
-
+        Button button = (Button)findViewById(R.id.start);
+        button.setOnClickListener(mStartListener);
+        button = (Button)findViewById(R.id.stop);
+        button.setOnClickListener(mStopListener);
+        button = (Button)findViewById(R.id.start_logging);
+        button.setOnClickListener(mStartLoggingListener);
+        button = (Button)findViewById(R.id.stop_logging);
+        button.setOnClickListener(mStopLoggingListener);
     }
     
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -118,67 +129,121 @@ public class SelectDeviceActivity extends Activity {
     	
     	return adapters;
     }
-    
+
+
+    /**
+     * Class for interacting with the main interface of the service.
+     */
     private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
+        public void onServiceConnected(ComponentName className,
+                IBinder service) {
             // This is called when the connection with the service has been
             // established, giving us the service object we can use to
-            // interact with the service.  Because we have bound to a explicit
-            // service that we know is running in our own process, we can
-            // cast its IBinder to a concrete class and directly access it.
-            mBoundService = ((LocationProviderService.LocalBinder)service).getService();
-            
-            // Tell the user about this for our demo.
-            Toast.makeText(SelectDeviceActivity.this, R.string.local_service_connected,
-                    Toast.LENGTH_SHORT).show();
+            // interact with the service.  We are communicating with our
+            // service through an IDL interface, so get a client-side
+            // representation of that from the raw service object.
+            mService = ILocationProviderService.Stub.asInterface(service);
+
+            if(mLoggingEnabled) {
+	    		try {
+					mService.startLogging();
+				}
+				catch(RemoteException e) {
+					Log.e(TAG, "Could not call start logging on the service", e);
+					Toast.makeText(SelectDeviceActivity.this, "Could not start logging", Toast.LENGTH_LONG);
+				}
+            } else {
+				try {
+					mService.stopLogging();
+				}
+				catch(RemoteException e) {
+					Log.e(TAG, "Could not call stop logging on the service", e);
+					Toast.makeText(SelectDeviceActivity.this, "Could not start logging", Toast.LENGTH_LONG);
+				}
+			}
         }
 
         public void onServiceDisconnected(ComponentName className) {
             // This is called when the connection with the service has been
             // unexpectedly disconnected -- that is, its process crashed.
-            // Because it is running in our same process, we should never
-            // see this happen.
-            mBoundService = null;
-            Toast.makeText(SelectDeviceActivity.this, R.string.local_service_disconnected,
-                    Toast.LENGTH_SHORT).show();
+            mService = null;
         }
     };
 
-    private OnClickListener mBindListener = new OnClickListener() {
+    private OnClickListener mStartListener = new OnClickListener() {
         public void onClick(View v) {
-            // Establish a connection with the service.  We use an explicit
-            // class name because we want a specific service implementation that
-            // we know will be running in our own process (and thus won't be
-            // supporting component replacement by other applications).
-            bindService(new Intent(SelectDeviceActivity.this, 
-            		LocationProviderService.class), mConnection, Context.BIND_AUTO_CREATE);
-            mIsBound = true;
+            // Make sure the service is started.  It will continue running
+            // until someone calls stopService().
+            // We use an action code here, instead of explicitly supplying
+            // the component name, so that other packages can replace
+            // the service.
+        	
+        	Intent serviceStartIntent = new Intent(BT_GPS_SERVICE_NAME);
+        	serviceStartIntent.putExtra(LocationProviderService.INTENT_EXTRA_ADDRESS,	SelectDeviceActivity.this.mSelectedDevice.getAddress());
+    		serviceStartIntent.putExtra(LocationProviderService.INTENT_EXTRA_OVERRIDE_SYSTEM_PROVIDER, cbOverrideSystemData.isChecked());
+        	
+			startService(serviceStartIntent);
         }
     };
 
-    private OnClickListener mUnbindListener = new OnClickListener() {
+    private OnClickListener mStopListener = new OnClickListener() {
         public void onClick(View v) {
-            if (mIsBound) {
-                // Detach our existing connection.
-                unbindService(mConnection);
-                mIsBound = false;
-            }
+            // Cancel a previous call to startService().  Note that the
+            // service will not actually stop at this point if there are
+            // still bound clients.
+            stopService(new Intent(BT_GPS_SERVICE_NAME));
         }
     };
-    
-    protected void testLocationService() {
-    	
-//    	LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-//    	Toast.makeText(this, locationManager.getProviders(false).toString(), Toast.LENGTH_LONG).show();
-    	
-    	this.startActivity(new Intent()
-    		.setComponent(new ComponentName(this, MockLocationProviderTestActivity.class)));
-    }
-    
-    protected void bindService() {
-    	
-    	
-    }
+
+    private OnClickListener mStartLoggingListener = new OnClickListener() {
+        public void onClick(View v) {
+        	
+        	mLoggingEnabled = true;
+        	
+        	if(mService == null) {
+        		
+                bindService(new Intent(ILocationProviderService.class.getName()), mConnection, Context.BIND_AUTO_CREATE);
+                
+                return;
+        	}
+        	
+        	if(mService != null) {
+        		
+        		try {
+					mService.startLogging();
+				}
+				catch(RemoteException e) {
+					Log.e(TAG, "Could not call start logging on the service", e);
+					Toast.makeText(SelectDeviceActivity.this, "Could not start logging", Toast.LENGTH_LONG);
+				}
+        	}
+        }
+    };
+
+    private OnClickListener mStopLoggingListener = new OnClickListener() {
+        public void onClick(View v) {
+        	
+        	mLoggingEnabled = false;
+        	
+        	if(mService == null) {
+        		
+                bindService(new Intent(ILocationProviderService.class.getName()), mConnection, Context.BIND_AUTO_CREATE);
+                
+                return;
+        	}
+        	
+        	if(mService != null) {
+        		
+        		try {
+					mService.stopLogging();
+				}
+				catch(RemoteException e) {
+					Log.e(TAG, "Could not call stop logging on the service", e);
+					Toast.makeText(SelectDeviceActivity.this, "Could not start logging", Toast.LENGTH_LONG);
+				}
+        	}
+        }
+    };
     
     private static class BluetoothDeviceDecorator {
     	
