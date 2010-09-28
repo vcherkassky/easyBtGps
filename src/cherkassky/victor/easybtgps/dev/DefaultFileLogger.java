@@ -1,4 +1,4 @@
-package cherkassky.victor.easybtgps;
+package cherkassky.victor.easybtgps.dev;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Environment;
 import android.util.Log;
-import android.util.Printer;
 import cherkassky.victor.easybtgps.nmea.Message;
 
 
@@ -24,9 +23,9 @@ import cherkassky.victor.easybtgps.nmea.Message;
  * Created Sep 3, 2010
  *
  */
-public class FileLogger implements Printer {
+public class DefaultFileLogger implements FileLogger {
 	
-	private static final String TAG = FileLogger.class.getSimpleName();
+	private static final String TAG = DefaultFileLogger.class.getSimpleName();
 
 	private static final String BASE_DIR_NAME = File.separator + "easyBtGps";
 	
@@ -60,14 +59,14 @@ public class FileLogger implements Printer {
 
 	protected Context mContext;
 
-	public FileLogger(Context context, boolean loggingEnabled, String fileName) {
+	public DefaultFileLogger(Context context, boolean loggingEnabled, String fileName) {
 
 		this.mContext = context;
 		this.mLoggingEnabled = loggingEnabled;
 		this.mLoggingFileName = fileName;
 	}
 	
-	public FileLogger(Context context, boolean loggingEnabled, String fileName, int loggingFrequency) {
+	public DefaultFileLogger(Context context, boolean loggingEnabled, String fileName, int loggingFrequency) {
 
 		this.mContext = context;
 		this.mLoggingEnabled = loggingEnabled;
@@ -86,7 +85,8 @@ public class FileLogger implements Printer {
 		this.log(message);
 	}
 
-	protected void startLogging() {
+	@Override
+	public void startLogging() {
 		
 		mLoggingEnabled = true;
 		
@@ -106,7 +106,8 @@ public class FileLogger implements Printer {
 		}
 	}
 	
-	protected void stopLogging() {
+	@Override
+	public void stopLogging() {
 		
 		mLoggingEnabled = false;
 		
@@ -120,7 +121,8 @@ public class FileLogger implements Printer {
 		}
 	}
 
-	protected void startNewLog(String fileName) {
+	@Override
+	public void startNewLog(String fileName) {
 		
 		if(mLoggingEnabled && !mLoggingPaused) {
 			
@@ -136,7 +138,8 @@ public class FileLogger implements Printer {
 
 	}
 	
-	protected void log(String message) {
+	@Override
+	public void log(String message) {
 
 		if(mLoggingEnabled && !mLoggingPaused) {
 			
@@ -144,7 +147,8 @@ public class FileLogger implements Printer {
 		}
 	}
 	
-	protected void log(Collection<Message> messages, boolean count) {
+	@Override
+	public void log(Collection<Message> messages, boolean count) {
 
 		if(mLoggingEnabled && !mLoggingPaused) {
 

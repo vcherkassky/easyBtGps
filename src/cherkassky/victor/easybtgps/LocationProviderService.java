@@ -1,8 +1,5 @@
 package cherkassky.victor.easybtgps;
 
-import java.io.IOException;
-import java.util.Date;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,15 +8,12 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.GpsStatus.NmeaListener;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
+import cherkassky.victor.easybtgps.dev.FileLogger;
 
 
 /**
@@ -121,7 +115,8 @@ public class LocationProviderService extends Service {
 			
 			if(mNmeaFileLogger == null) {
 				
-				mNmeaFileLogger = new FileLogger(LocationProviderService.this, true, getFreshNmeaLogFileName());
+//				mNmeaFileLogger = new DefaultFileLogger(LocationProviderService.this, true, getFreshNmeaLogFileName());
+				return;
 			}
 
 			mNmeaFileLogger.startLogging();
@@ -148,8 +143,6 @@ public class LocationProviderService extends Service {
 
         // Display a notification about us starting.  We put an icon in the status bar.
         showNotification();
-        
-//        useMockLocationProvider();
     }
 
     @Override
@@ -234,23 +227,22 @@ public class LocationProviderService extends Service {
         mNM.notify(R.string.local_service_started, notification);
     }
     
-    @SuppressWarnings("unused")
-	private void useMockLocationProvider() {
-    	
-		LocationManager locationManager = addProvider();
-
-		try {
-
-			mLocationProvider = new MockLocationProvider(locationManager, mLocationProviderName, this);
-			mLocationProvider.start();
-
-		} catch (IOException e) {
-			Log.e(TAG, "Error occured while reading locationData file", e);
-    		Toast.makeText(this, "Error occured while reading locationData file", Toast.LENGTH_LONG).show();
-    		
-    		this.stopSelf();
-		}
-    }
+//	private void useMockLocationProvider() {
+//    	
+//		LocationManager locationManager = addProvider();
+//
+//		try {
+//
+//			mLocationProvider = new MockLocationProvider(locationManager, mLocationProviderName, this);
+//			mLocationProvider.start();
+//
+//		} catch (IOException e) {
+//			Log.e(TAG, "Error occured while reading locationData file", e);
+//    		Toast.makeText(this, "Error occured while reading locationData file", Toast.LENGTH_LONG).show();
+//    		
+//    		this.stopSelf();
+//		}
+//    }
     
     private void useBtGpsLocationProvider(BluetoothDevice bluetoothDevice, boolean loggingEnabled) {
     	
@@ -263,16 +255,12 @@ public class LocationProviderService extends Service {
     private LocationManager addProvider() {
 		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-//		if(locationManager.getAllProviders().contains(mLocationProviderName)) {
-//			
-//			locationManager.removeTestProvider(mLocationProviderName);
-//		}
-		
 		locationManager.addTestProvider(mLocationProviderName, false, true, false, false, true, true, true, 0, 3);
 		locationManager.setTestProviderEnabled(mLocationProviderName, true);
 
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300, 0, mNmeaLocationListener);
-		locationManager.addNmeaListener(mNmeaListener);
+		// These 2 lines are adding new NmeaListener
+//		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300, 0, mNmeaLocationListener);
+//		locationManager.addNmeaListener(mNmeaListener);
 		
 		return locationManager;
     }
@@ -282,62 +270,63 @@ public class LocationProviderService extends Service {
     	
 		locationManager.removeTestProvider(mLocationProviderName);
 		
-		locationManager.removeUpdates(mNmeaLocationListener);
-		locationManager.removeNmeaListener(mNmeaListener);
+		// These 2 lines are removing NmeaListener
+//		locationManager.removeUpdates(mNmeaLocationListener);
+//		locationManager.removeNmeaListener(mNmeaListener);
     }
     
-    private final NmeaListener mNmeaListener = new NmeaListener() {
-		
-		@Override
-		public void onNmeaReceived(long timestamp, String nmea) {
-
-			if(mNmeaFileLogger != null) {
-				
-				mNmeaFileLogger.log(nmea);
-			}
-		}
-	}; 
+//    private final NmeaListener mNmeaListener = new NmeaListener() {
+//		
+//		@Override
+//		public void onNmeaReceived(long timestamp, String nmea) {
+//
+//			if(mNmeaFileLogger != null) {
+//				
+//				mNmeaFileLogger.log(nmea);
+//			}
+//		}
+//	}; 
 	
-	private final LocationListener mNmeaLocationListener = new LocationListener() {
-
-		/**
-		 * @see android.location.LocationListener#onLocationChanged(android.location.Location)
-		 */
-		@Override
-		public void onLocationChanged(Location paramLocation) {
-			
-			if(mNmeaFileLogger != null) {
-				
-				paramLocation.dump(mNmeaFileLogger, "");
-			}
-		}
-
-		/**
-		 * @see android.location.LocationListener#onStatusChanged(java.lang.String, int, android.os.Bundle)
-		 */
-		@Override
-		public void onStatusChanged(String paramString, int paramInt, Bundle paramBundle) {
-		}
-
-		/**
-		 * @see android.location.LocationListener#onProviderEnabled(java.lang.String)
-		 */
-		@Override
-		public void onProviderEnabled(String paramString) {
-		}
-
-		/**
-		 * @see android.location.LocationListener#onProviderDisabled(java.lang.String)
-		 */
-		@Override
-		public void onProviderDisabled(String paramString) {
-		}
-		
-	};
+//	private final LocationListener mNmeaLocationListener = new LocationListener() {
+//
+//		/**
+//		 * @see android.location.LocationListener#onLocationChanged(android.location.Location)
+//		 */
+//		@Override
+//		public void onLocationChanged(Location paramLocation) {
+//			
+//			if(mNmeaFileLogger != null) {
+//				
+//				paramLocation.dump(mNmeaFileLogger, "");
+//			}
+//		}
+//
+//		/**
+//		 * @see android.location.LocationListener#onStatusChanged(java.lang.String, int, android.os.Bundle)
+//		 */
+//		@Override
+//		public void onStatusChanged(String paramString, int paramInt, Bundle paramBundle) {
+//		}
+//
+//		/**
+//		 * @see android.location.LocationListener#onProviderEnabled(java.lang.String)
+//		 */
+//		@Override
+//		public void onProviderEnabled(String paramString) {
+//		}
+//
+//		/**
+//		 * @see android.location.LocationListener#onProviderDisabled(java.lang.String)
+//		 */
+//		@Override
+//		public void onProviderDisabled(String paramString) {
+//		}
+//		
+//	};
 	
-	private String getFreshNmeaLogFileName() {
-		
-		return "nmea_" + FileLogger.formatDate(new Date()) + ".log";
-	}
+//	private String getFreshNmeaLogFileName() {
+//		
+//		return "nmea_" + DefaultFileLogger.formatDate(new Date()) + ".log";
+//	}
 
 }

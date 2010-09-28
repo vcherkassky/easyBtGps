@@ -5,6 +5,8 @@ import java.util.Date;
 
 import android.content.Context;
 import android.location.LocationManager;
+import cherkassky.victor.easybtgps.dev.DefaultFileLogger;
+import cherkassky.victor.easybtgps.dev.FileLogger;
 import cherkassky.victor.easybtgps.nmea.Message;
 
 /**
@@ -15,7 +17,7 @@ import cherkassky.victor.easybtgps.nmea.Message;
  */
 public abstract class CustomLocationProviderThread extends Thread {
 	
-	private static final String TAG = CustomLocationProviderThread.class.getSimpleName();
+//	private static final String TAG = CustomLocationProviderThread.class.getSimpleName();
 
 	protected LocationManager mLocationManager;
 
@@ -31,10 +33,8 @@ public abstract class CustomLocationProviderThread extends Thread {
 		this.mProviderName = providerName;
 		this.mContext = context;
 		
-		this.mFileLogger = new FileLogger(context, loggingEnabled, getFreshLogFileName());
-
 		if(loggingEnabled) {
-			mFileLogger.startLogging();
+			this.startLogging();
 		}
 	}
 
@@ -71,7 +71,7 @@ public abstract class CustomLocationProviderThread extends Thread {
 		
 		if(mFileLogger == null) {
 			
-			mFileLogger = new FileLogger(mContext, true, getFreshLogFileName());
+			mFileLogger = new DefaultFileLogger(mContext, true, getFreshLogFileName());
 		}
 
 		mFileLogger.startLogging();
@@ -95,7 +95,7 @@ public abstract class CustomLocationProviderThread extends Thread {
 	
 	private String getFreshLogFileName() {
 		
-		return mProviderName + "_" + FileLogger.formatDate(new Date()) + ".log";
+		return mProviderName + "_" + DefaultFileLogger.formatDate(new Date()) + ".log";
 	}
 
 }
