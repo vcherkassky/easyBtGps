@@ -1,9 +1,10 @@
-package cherkassky.victor.easybtgps.dev;
+package com.vcherkassky.easybtgps.dev;
 
 import java.util.Collection;
 
-import cherkassky.victor.easybtgps.nmea.Message;
 import android.util.Printer;
+
+import com.vcherkassky.easybtgps.nmea.Message;
 
 
 /**

@@ -1,10 +1,11 @@
-package cherkassky.victor.easybtgps.nmea;
+package com.vcherkassky.easybtgps.nmea;
 
 import java.util.List;
 
 import android.location.Location;
 import android.os.Bundle;
-import cherkassky.victor.easybtgps.nmea.Message.Type;
+
+import com.vcherkassky.easybtgps.nmea.Message.Type;
 
 
 /**

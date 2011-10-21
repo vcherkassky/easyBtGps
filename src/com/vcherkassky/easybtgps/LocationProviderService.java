@@ -1,4 +1,4 @@
-package cherkassky.victor.easybtgps;
+package com.vcherkassky.easybtgps;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -13,7 +13,8 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
-import cherkassky.victor.easybtgps.dev.FileLogger;
+
+import com.vcherkassky.easybtgps.dev.FileLogger;
 
 
 /**

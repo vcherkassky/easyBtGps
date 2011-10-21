@@ -1,4 +1,4 @@
-package cherkassky.victor.easybtgps;
+package com.vcherkassky.easybtgps;
 
 import java.util.ArrayList;
 import java.util.List;

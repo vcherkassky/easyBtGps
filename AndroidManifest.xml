@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="cherkassky.victor.easybtgps"
+      package="com.vcherkassky.easybtgps"
       android:versionCode="1"
       android:versionName="1.0">
       
@@ -11,7 +11,7 @@
 	
     <application android:icon="@drawable/icon" android:label="@string/app_name"
     	android:debuggable="true">
-        <activity android:name=".SelectDeviceActivity"
+        <activity android:name="com.vcherkassky.easybtgps.SelectDeviceActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,14 +19,14 @@
             </intent-filter>
         </activity>
 
-		<service android:name=".LocationProviderService" >
+		<service android:name="com.vcherkassky.easybtgps.LocationProviderService" >
             <intent-filter>
                 <!-- These are the interfaces supported by the service, which
                      you can bind to. -->
-                <action android:name="cherkassky.victor.easybtgps.ILocationProviderService" />
+                <action android:name="com.vcherkassky.easybtgps.ILocationProviderService" />
                 <!-- This is an action code you can use to select the service
                      without explicitly supplying the implementation class. -->
-                <action android:name="cherkassky.victor.easybtgps.BT_GPS_SERVICE" />
+                <action android:name="com.vcherkassky.easybtgps.BT_GPS_SERVICE" />
             </intent-filter>
 		</service>
     </application>

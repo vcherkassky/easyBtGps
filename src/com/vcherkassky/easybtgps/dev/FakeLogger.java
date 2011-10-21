@@ -1,8 +1,9 @@
-package cherkassky.victor.easybtgps.dev;
+package com.vcherkassky.easybtgps.dev;
 
 import java.util.Collection;
 
-import cherkassky.victor.easybtgps.nmea.Message;
+import com.vcherkassky.easybtgps.nmea.Message;
+
 
 
 /**
@@ -22,7 +23,7 @@ public class FakeLogger implements FileLogger {
 	}
 
 	/**
-	 * @see cherkassky.victor.easybtgps.dev.FileLogger#startLogging()
+	 * @see com.vcherkassky.easybtgps.dev.FileLogger#startLogging()
 	 */
 	@Override
 	public void startLogging() {
@@ -30,7 +31,7 @@ public class FakeLogger implements FileLogger {
 	}
 
 	/**
-	 * @see cherkassky.victor.easybtgps.dev.FileLogger#stopLogging()
+	 * @see com.vcherkassky.easybtgps.dev.FileLogger#stopLogging()
 	 */
 	@Override
 	public void stopLogging() {
@@ -38,7 +39,7 @@ public class FakeLogger implements FileLogger {
 	}
 
 	/**
-	 * @see cherkassky.victor.easybtgps.dev.FileLogger#startNewLog(java.lang.String)
+	 * @see com.vcherkassky.easybtgps.dev.FileLogger#startNewLog(java.lang.String)
 	 */
 	@Override
 	public void startNewLog(String fileName) {
@@ -46,7 +47,7 @@ public class FakeLogger implements FileLogger {
 	}
 
 	/**
-	 * @see cherkassky.victor.easybtgps.dev.FileLogger#log(java.lang.String)
+	 * @see com.vcherkassky.easybtgps.dev.FileLogger#log(java.lang.String)
 	 */
 	@Override
 	public void log(String message) {
@@ -54,7 +55,7 @@ public class FakeLogger implements FileLogger {
 	}
 
 	/**
-	 * @see cherkassky.victor.easybtgps.dev.FileLogger#log(java.util.Collection, boolean)
+	 * @see com.vcherkassky.easybtgps.dev.FileLogger#log(java.util.Collection, boolean)
 	 */
 	@Override
 	public void log(Collection<Message> messages, boolean count) {

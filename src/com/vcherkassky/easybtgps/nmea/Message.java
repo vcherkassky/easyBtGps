@@ -1,4 +1,4 @@
-package cherkassky.victor.easybtgps.nmea;
+package com.vcherkassky.easybtgps.nmea;
 
 import java.util.StringTokenizer;
 

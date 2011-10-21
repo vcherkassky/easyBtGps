@@ -1,4 +1,4 @@
-package cherkassky.victor.easybtgps;
+package com.vcherkassky.easybtgps;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,9 +14,10 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 import android.widget.Toast;
-import cherkassky.victor.easybtgps.nmea.LocationDataExtractor;
-import cherkassky.victor.easybtgps.nmea.Message;
-import cherkassky.victor.easybtgps.nmea.Message.Type;
+
+import com.vcherkassky.easybtgps.nmea.LocationDataExtractor;
+import com.vcherkassky.easybtgps.nmea.Message;
+import com.vcherkassky.easybtgps.nmea.Message.Type;
 
 
 /**

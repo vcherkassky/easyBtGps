@@ -1,4 +1,4 @@
-package cherkassky.victor.easybtgps.dev;
+package com.vcherkassky.easybtgps.dev;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +14,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Environment;
 import android.util.Log;
-import cherkassky.victor.easybtgps.nmea.Message;
+
+import com.vcherkassky.easybtgps.nmea.Message;
 
 
 /**

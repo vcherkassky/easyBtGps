@@ -1,13 +1,14 @@
-package cherkassky.victor.easybtgps;
+package com.vcherkassky.easybtgps;
 
 import java.util.Collection;
 import java.util.Date;
 
 import android.content.Context;
 import android.location.LocationManager;
-import cherkassky.victor.easybtgps.dev.DefaultFileLogger;
-import cherkassky.victor.easybtgps.dev.FileLogger;
-import cherkassky.victor.easybtgps.nmea.Message;
+
+import com.vcherkassky.easybtgps.dev.DefaultFileLogger;
+import com.vcherkassky.easybtgps.dev.FileLogger;
+import com.vcherkassky.easybtgps.nmea.Message;
 
 /**
  * @author victor

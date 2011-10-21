@@ -1,4 +1,4 @@
-package cherkassky.victor.easybtgps.dev;
+package com.vcherkassky.easybtgps.dev;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,8 +12,9 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import cherkassky.victor.easybtgps.CustomLocationProviderThread;
-import cherkassky.victor.easybtgps.nmea.LocationDataExtractor;
+
+import com.vcherkassky.easybtgps.CustomLocationProviderThread;
+import com.vcherkassky.easybtgps.nmea.LocationDataExtractor;
 
 
 /**
