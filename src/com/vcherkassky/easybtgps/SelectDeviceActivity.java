@@ -25,13 +25,17 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+/**
+ * @author victor
+ *
+ */
 public class SelectDeviceActivity extends Activity {
 	
 	private static final String TAG = SelectDeviceActivity.class.getSimpleName();
 
     private static final int REQUEST_ENABLE_BT = 1;
     
-    private static final String BT_GPS_SERVICE_NAME = "cherkassky.victor.easybtgps.BT_GPS_SERVICE";
+    private static final String BT_GPS_SERVICE_NAME = "com.vcherkassky.easybtgps.BT_GPS_SERVICE";
     
 	private BluetoothAdapter mBluetoothAdapter;
 	
@@ -91,7 +95,7 @@ public class SelectDeviceActivity extends Activity {
         
         cbOverrideSystemData = (CheckBox)findViewById(R.id.override_system_data);
         
-        // Watch for button clicks.
+        // Adding button click listeners
         Button button = (Button)findViewById(R.id.start);
         button.setOnClickListener(mStartListener);
         button = (Button)findViewById(R.id.stop);
@@ -117,7 +121,7 @@ public class SelectDeviceActivity extends Activity {
     protected List<BluetoothDeviceDecorator> queryPairedBtDevices() {
     	
     	Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-    	List<BluetoothDeviceDecorator> adapters = new ArrayList<SelectDeviceActivity.BluetoothDeviceDecorator>(pairedDevices.size());
+    	List<BluetoothDeviceDecorator> adapters = new ArrayList<BluetoothDeviceDecorator>(pairedDevices.size());
     	// If there are paired devices
     	if (pairedDevices.size() > 0) {
     	    // Loop through paired devices
@@ -245,6 +249,12 @@ public class SelectDeviceActivity extends Activity {
         }
     };
     
+    /**
+     * Simple BluetoothDevice decorator for displaying device name in a ArrayAdapter.
+     * 
+     * @author victor
+     *
+     */
     private static class BluetoothDeviceDecorator {
     	
     	private BluetoothDevice mBluetoothDevice;

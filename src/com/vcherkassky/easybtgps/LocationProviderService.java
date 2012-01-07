@@ -58,7 +58,7 @@ public class LocationProviderService extends Service {
 		}
 
 		/**
-		 * @see cherkassky.victor.easybtgps.ILocationProviderService#setBluetoothDevice(java.lang.String)
+		 * @see com.vcherkassky.easybtgps.ILocationProviderService#setBluetoothDevice(java.lang.String)
 		 */
 		@Override
 		public void setBluetoothDevice(String deviceAddress) throws RemoteException {
@@ -75,7 +75,7 @@ public class LocationProviderService extends Service {
 		}
 
 		/**
-		 * @see cherkassky.victor.easybtgps.ILocationProviderService#setLocationProviderName(java.lang.String)
+		 * @see com.vcherkassky.easybtgps.ILocationProviderService#setLocationProviderName(java.lang.String)
 		 */
 		@Override
 		public void setLocationProviderName(String name) throws RemoteException {
@@ -98,7 +98,7 @@ public class LocationProviderService extends Service {
 		}
 
 		/**
-		 * @see cherkassky.victor.easybtgps.ILocationProviderService#getLocationProviderName()
+		 * @see com.vcherkassky.easybtgps.ILocationProviderService#getLocationProviderName()
 		 */
 		@Override
 		public String getLocationProviderName() throws RemoteException {
@@ -107,7 +107,7 @@ public class LocationProviderService extends Service {
 		}
 
 		/**
-		 * @see cherkassky.victor.easybtgps.ILocationProviderService#startLogging()
+		 * @see com.vcherkassky.easybtgps.ILocationProviderService#startLogging()
 		 */
 		@Override
 		public void startLogging() throws RemoteException {
@@ -124,7 +124,7 @@ public class LocationProviderService extends Service {
 		}
 
 		/**
-		 * @see cherkassky.victor.easybtgps.ILocationProviderService#stopLogging()
+		 * @see com.vcherkassky.easybtgps.ILocationProviderService#stopLogging()
 		 */
 		@Override
 		public void stopLogging() throws RemoteException {
